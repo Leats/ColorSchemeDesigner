@@ -13,9 +13,11 @@ from PIL import Image
 import random
 from conversion import *
 
+
 def createScheme(color):
     """creates a color scheme with 5 colors and saves them as a file"""
-    colors = createComplScheme(color)
+    #colors = createComplScheme(color)
+    colors = createMonoScheme(color)
     print(colors)
 
     img = Image.new('RGB', (500, 100), colors[0])
@@ -25,13 +27,27 @@ def createScheme(color):
     img.paste(colors[4], [400, 0, 500, 100])
     img.show()
 
+
 def createComplScheme(color):
     """creates a color scheme with complementary colors"""
     colors = [tuple(color)]
-    colors.append(tuple(changeSaturation(color,random.random())))
+    colors.append(tuple(changeSaturation(color, random.random())))
     colors.append(tuple(complementary(color)))
-    colors.append(tuple(changeSaturation(colors[2],random.random())))
-    colors.append(tuple(changeBrightness(changeSaturation(colors[2],random.random()),random.random())))
+    colors.append(tuple(changeSaturation(colors[2], random.random())))
+    colors.append(tuple(changeBrightness(changeSaturation(
+        colors[2], random.random()), random.random())))
+    return(colors)
+
+
+def createMonoScheme(color):
+    """creates a 'monotone' color scheme. not completely monotone to
+    make it more exciting. Instead, the color will slowly shift in each color"""
+    # starting brightness at one point, will shift further down
+    brightness = random.uniform(0.588, 0.98)
+    colors = [tuple(changeBrightness(color,brightness))]
+    for x in range(0,4):
+        brightness -= 0.098
+        colors.append(tuple(changeBrightness(changeHue(colors[0],9),brightness)))
     return(colors)
 
 
@@ -65,11 +81,23 @@ def changeSaturation(color, percentage):
     result[1] = percentage
     return(HSVtoRGB(result))
 
+
 def changeBrightness(color, percentage):
     """Changes the brightness of the given color to the given percentage.
     Percentage should be between 0 and 100."""
     result = RGBtoHSV(color)
     result[2] = percentage
+    return(HSVtoRGB(result))
+
+
+def changeHue(color, degree):
+    """Changes the hue of the given color to the given degree."""
+    result = RGBtoHSV(color)
+    result[0] += degree
+    if result[0] > 360:
+        result[0] -= 360
+    elif result[0] < 0:
+        result[0] += 360
     return(HSVtoRGB(result))
 
 
