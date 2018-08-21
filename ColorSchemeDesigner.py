@@ -5,6 +5,7 @@ complementary
 split-complementary
 triadic
 tetradic
+analogous
 monochrome
 
 see:
@@ -25,7 +26,8 @@ def createScheme(color):
     #colors = createMonoScheme(color)
     #colors = createSplitComplScheme(color)
     #colors = createTriadicScheme(color)
-    colors = createTetradicScheme(color)
+    #colors = createTetradicScheme(color)
+    colors = createAnalogousScheme(color)
     print(colors)
 
     img = Image.new('RGB', (500, 100), colors[0])
@@ -81,7 +83,7 @@ def createTriadicScheme(color):
     return(colors)
 
 def createTetradicScheme(color):
-    """creates a color scheme with split complementary colors."""
+    """creates a color scheme with tetradic colors."""
     colors = [tuple(color)]
     colors.append(tuple(changeBrightness(changeSaturation(
         color, random.random()), random.random())))
@@ -89,6 +91,17 @@ def createTetradicScheme(color):
     colors.append(tuple(changeHue(color,180)))
     colors.append(tuple(changeBrightness(changeSaturation(
         changeHue(color,270), random.random()), random.random())))
+    return(colors)
+
+def createAnalogousScheme(color):
+    """creates a color scheme with analogous colors."""
+    colors = [tuple(color)]
+    colors.append(tuple(changeBrightness(changeSaturation(
+        color, random.random()), random.random())))
+    colors.append(tuple(changeHue(changeSaturation(color, random.random()),30)))
+    colors.append(tuple(changeHue(color,60)))
+    colors.append(tuple(changeBrightness(changeSaturation(
+        changeHue(color,90), random.random()), random.random())))
     return(colors)
 
 def randomColor():
