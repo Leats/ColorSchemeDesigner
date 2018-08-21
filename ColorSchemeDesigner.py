@@ -24,7 +24,8 @@ def createScheme(color):
     #colors = createComplScheme(color)
     #colors = createMonoScheme(color)
     #colors = createSplitComplScheme(color)
-    colors = createTriadicScheme(color)
+    #colors = createTriadicScheme(color)
+    colors = createTetradicScheme(color)
     print(colors)
 
     img = Image.new('RGB', (500, 100), colors[0])
@@ -69,7 +70,7 @@ def createSplitComplScheme(color):
     return(colors)
 
 def createTriadicScheme(color):
-    """creates a color scheme with split complementary colors."""
+    """creates a color scheme with triadic colors."""
     colors = [tuple(color)]
     colors.append(tuple(changeBrightness(changeSaturation(
         color, random.random()), random.random())))
@@ -77,6 +78,17 @@ def createTriadicScheme(color):
     colors.append(tuple(changeHue(color,240)))
     colors.append(tuple(changeBrightness(changeSaturation(
         colors[3], random.random()), random.random())))
+    return(colors)
+
+def createTetradicScheme(color):
+    """creates a color scheme with split complementary colors."""
+    colors = [tuple(color)]
+    colors.append(tuple(changeBrightness(changeSaturation(
+        color, random.random()), random.random())))
+    colors.append(tuple(changeHue(changeSaturation(color, random.random()),90)))
+    colors.append(tuple(changeHue(color,180)))
+    colors.append(tuple(changeBrightness(changeSaturation(
+        changeHue(color,270), random.random()), random.random())))
     return(colors)
 
 def randomColor():
