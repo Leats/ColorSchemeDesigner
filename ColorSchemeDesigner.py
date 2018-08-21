@@ -7,6 +7,11 @@ triadic
 tetradic
 monochrome
 
+see:
+https://www.ethangardner.com/articles/2009/03/15/a-math-based-approach-to-color-theory-using-hue-saturation-and-brightness-hsb/
+for mathematic approach
+
+
 Color is a list of 3 int values between 0 and 255
 """
 from PIL import Image
@@ -17,7 +22,9 @@ from conversion import *
 def createScheme(color):
     """creates a color scheme with 5 colors and saves them as a file"""
     #colors = createComplScheme(color)
-    colors = createMonoScheme(color)
+    #colors = createMonoScheme(color)
+    #colors = createSplitComplScheme(color)
+    colors = createTriadicScheme(color)
     print(colors)
 
     img = Image.new('RGB', (500, 100), colors[0])
@@ -50,6 +57,27 @@ def createMonoScheme(color):
         colors.append(tuple(changeBrightness(changeHue(colors[0],9),brightness)))
     return(colors)
 
+def createSplitComplScheme(color):
+    """creates a color scheme with split complementary colors."""
+    colors = [tuple(color)]
+    colors.append(tuple(changeBrightness(changeSaturation(
+        color, random.random()), random.random())))
+    colors.append(tuple(changeHue(changeSaturation(color, random.random()),150)))
+    colors.append(tuple(changeHue(color,-210)))
+    colors.append(tuple(changeBrightness(changeSaturation(
+        colors[3], random.random()), random.random())))
+    return(colors)
+
+def createTriadicScheme(color):
+    """creates a color scheme with split complementary colors."""
+    colors = [tuple(color)]
+    colors.append(tuple(changeBrightness(changeSaturation(
+        color, random.random()), random.random())))
+    colors.append(tuple(changeHue(changeSaturation(color, random.random()),120)))
+    colors.append(tuple(changeHue(color,240)))
+    colors.append(tuple(changeBrightness(changeSaturation(
+        colors[3], random.random()), random.random())))
+    return(colors)
 
 def randomColor():
     """Creates a random color in list format."""
