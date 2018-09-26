@@ -67,7 +67,7 @@ def create_triadic_scheme(color):
     colors.append(tuple(change_hue(change_saturation(color, random.random()), 120)))
     colors.append(tuple(change_hue(color, 240)))
     colors.append(tuple(change_brightness(change_saturation(
-        colors[3], random.random()), random.random())))
+        colors[-1], random.random()), random.random())))
     return colors
 
 

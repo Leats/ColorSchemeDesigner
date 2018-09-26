@@ -47,7 +47,7 @@ def HSVtoRGB(color):
     q = (v * (1 - s * f))
     t = (v * (1 - s * (1 - f)))
 
-    if hi == 0 or hi == 6:
+    if hi in (0, 6):
         color[0], color[1], color[2] = v, t, p
     elif hi == 1:
         color[0], color[1], color[2] = q, v, p
