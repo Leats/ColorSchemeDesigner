@@ -148,4 +148,5 @@ def valid_color(color):
         return all(0 <= n <= 255 for n in color)
     return False
 
-create_scheme(random_color())
+if __name__ == '__main__':
+    create_scheme(random_color())
