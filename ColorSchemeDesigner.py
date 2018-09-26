@@ -1,34 +1,18 @@
-"""
-In color theory, "good" color schemes have different harmonies:
-
-complementary
-split-complementary
-triadic
-tetradic
-analogous
-monochrome
-
-see:
-https://www.ethangardner.com/articles/2009/03/15/a-math-based-approach-to-color-theory-using-hue-saturation-and-brightness-hsb/
-for mathematic approach
-
-
-Color is a list of 3 int values between 0 and 255
-"""
-from PIL import Image
 import random
-from conversion import *
+
+from PIL import Image
+
+from conversion import HSVtoRGB, RGBtoHSV, RGBtoHEX
 
 
-def createScheme(color):
-    """creates a color scheme with 5 colors and saves them as a file"""
-    #colors = createComplScheme(color)
-    #colors = createMonoScheme(color)
-    #colors = createSplitComplScheme(color)
-    #colors = createTriadicScheme(color)
-    #colors = createTetradicScheme(color)
-    colors = createAnalogousScheme(color)
-    print(colors)
+def create_scheme(color):
+    """Create a color scheme with 5 colors and save them as a file."""
+
+    schemes = [create_compl_scheme, create_mono_scheme, create_split_scheme,
+               create_triadic_scheme, create_tetradic_scheme, create_analogous_scheme]
+
+    colors = random.choice(schemes)(color)
+    print([RGBtoHEX(c) for c in colors])
 
     img = Image.new('RGB', (500, 100), colors[0])
     img.paste(colors[1], [100, 0, 200, 100])
@@ -38,96 +22,100 @@ def createScheme(color):
     img.show()
 
 
-def createComplScheme(color):
-    """creates a color scheme with complementary colors"""
+def create_compl_scheme(color):
+    """Create a color scheme with complementary colors."""
     colors = [tuple(color)]
-    colors.append(tuple(changeSaturation(color, random.random())))
+    colors.append(tuple(change_saturation(color, random.random())))
     colors.append(tuple(complementary(color)))
-    colors.append(tuple(changeSaturation(colors[2], random.random())))
-    colors.append(tuple(changeBrightness(changeSaturation(
+    colors.append(tuple(change_saturation(colors[2], random.random())))
+    colors.append(tuple(change_brightness(change_saturation(
         colors[2], random.random()), random.random())))
-    return(colors)
+    return colors
 
 
-def createMonoScheme(color):
-    """creates a 'monotone' color scheme. not completely monotone to
-    make it more exciting. Instead, the color will slowly shift in each color"""
-    # starting brightness at one point, will shift further down
+def create_mono_scheme(color):
+    """Create a 'monotone' color scheme. Not completely monotone to
+    make it more exciting. Instead, the color will slowly shift in each color. 
+    Starting brightness at one point, will shift further down. Since brightness 
+    becomes less with each step it should start with at least 58% to not end 
+    too dark but start with not more than 98% to not be pure white."""
     brightness = random.uniform(0.588, 0.98)
-    colors = [tuple(changeBrightness(color,brightness))]
-    for x in range(0,4):
+    colors = [tuple(change_brightness(color, brightness))]
+    for x in range(0, 4):
         brightness -= 0.098
-        colors.append(tuple(changeBrightness(changeHue(colors[0],9),brightness)))
-    return(colors)
+        colors.append(tuple(change_brightness(change_hue(colors[0], 9), brightness)))
+    return colors
 
-def createSplitComplScheme(color):
-    """creates a color scheme with split complementary colors."""
+
+def create_split_scheme(color):
+    """Create a color scheme with split complementary colors."""
     colors = [tuple(color)]
-    colors.append(tuple(changeBrightness(changeSaturation(
+    colors.append(tuple(change_brightness(change_saturation(
         color, random.random()), random.random())))
-    colors.append(tuple(changeHue(changeSaturation(color, random.random()),150)))
-    colors.append(tuple(changeHue(color,-210)))
-    colors.append(tuple(changeBrightness(changeSaturation(
+    colors.append(tuple(change_hue(change_saturation(color, random.random()), 150)))
+    colors.append(tuple(change_hue(color, -210)))
+    colors.append(tuple(change_brightness(change_saturation(
         colors[3], random.random()), random.random())))
-    return(colors)
+    return colors
 
-def createTriadicScheme(color):
-    """creates a color scheme with triadic colors."""
+
+def create_triadic_scheme(color):
+    """Create a color scheme with triadic colors."""
     colors = [tuple(color)]
-    colors.append(tuple(changeBrightness(changeSaturation(
+    colors.append(tuple(change_brightness(change_saturation(
         color, random.random()), random.random())))
-    colors.append(tuple(changeHue(changeSaturation(color, random.random()),120)))
-    colors.append(tuple(changeHue(color,240)))
-    colors.append(tuple(changeBrightness(changeSaturation(
+    colors.append(tuple(change_hue(change_saturation(color, random.random()), 120)))
+    colors.append(tuple(change_hue(color, 240)))
+    colors.append(tuple(change_brightness(change_saturation(
         colors[3], random.random()), random.random())))
-    return(colors)
+    return colors
 
-def createTetradicScheme(color):
-    """creates a color scheme with tetradic colors."""
+
+def create_tetradic_scheme(color):
+    """Create a color scheme with tetradic colors."""
     colors = [tuple(color)]
-    colors.append(tuple(changeBrightness(changeSaturation(
+    colors.append(tuple(change_brightness(change_saturation(
         color, random.random()), random.random())))
-    colors.append(tuple(changeHue(changeSaturation(color, random.random()),90)))
-    colors.append(tuple(changeHue(color,180)))
-    colors.append(tuple(changeBrightness(changeSaturation(
-        changeHue(color,270), random.random()), random.random())))
+    colors.append(tuple(change_hue(change_saturation(color, random.random()), 90)))
+    colors.append(tuple(change_hue(color, 180)))
+    colors.append(tuple(change_brightness(change_saturation(
+        change_hue(color, 270), random.random()), random.random())))
     return(colors)
 
-def createAnalogousScheme(color):
-    """creates a color scheme with analogous colors."""
+
+def create_analogous_scheme(color):
+    """Create a color scheme with analogous colors."""
     colors = [tuple(color)]
-    colors.append(tuple(changeBrightness(changeSaturation(
+    colors.append(tuple(change_brightness(change_saturation(
         color, random.random()), random.random())))
-    colors.append(tuple(changeHue(changeSaturation(color, random.random()),30)))
-    colors.append(tuple(changeHue(color,60)))
-    colors.append(tuple(changeBrightness(changeSaturation(
-        changeHue(color,90), random.random()), random.random())))
-    return(colors)
+    colors.append(tuple(change_hue(change_saturation(color, random.random()), 30)))
+    colors.append(tuple(change_hue(color, 60)))
+    colors.append(tuple(change_brightness(change_saturation(
+        change_hue(color, 90), random.random()), random.random())))
+    return colors
 
-def randomColor():
-    """Creates a random color in list format."""
+
+def random_color():
+    """Create a random color in list format."""
     return(random.sample(range(255), 3))
 
 
 def complementary(color):
-    """Gives the complementary color given one color saved as string.
-    """
+    """Give the complementary color given one color saved as string."""
     complementaryColor = []
 
     try:
-        if not validColor(color):
+        if not valid_color(color):
             raise ValueError("Given color is not valid!")
     except (TypeError, ValueError) as e:
         print(e)
         print(color)
         exit()
     else:
-        for number in color:
-            complementaryColor.append(abs(number - 255))
-        return(complementaryColor)
+        return [abs(n - 255) for n in color]
 
 
-def changeSaturation(color, percentage):
+def change_saturation(color, percentage):
     """Changes the saturation of the given color to the given percentage.
     Percentage should be float between 0 and 1."""
     result = RGBtoHSV(color)
@@ -135,7 +123,7 @@ def changeSaturation(color, percentage):
     return(HSVtoRGB(result))
 
 
-def changeBrightness(color, percentage):
+def change_brightness(color, percentage):
     """Changes the brightness of the given color to the given percentage.
     Percentage should be between 0 and 100."""
     result = RGBtoHSV(color)
@@ -143,7 +131,7 @@ def changeBrightness(color, percentage):
     return(HSVtoRGB(result))
 
 
-def changeHue(color, degree):
+def change_hue(color, degree):
     """Changes the hue of the given color to the given degree."""
     result = RGBtoHSV(color)
     result[0] += degree
@@ -154,13 +142,10 @@ def changeHue(color, degree):
     return(HSVtoRGB(result))
 
 
-def validColor(color):
+def valid_color(color):
     """Checks if given list is a valid color."""
     if len(color) == 3:
-        for number in color:
-            if number < 0 or number > 255:
-                return False
-        return True
+        return all(0 <= n <= 255 for n in color)
     return False
 
-createScheme(randomColor())
+create_scheme(random_color())
