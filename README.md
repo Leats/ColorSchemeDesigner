@@ -11,5 +11,4 @@ In color theory, "good" color schemes have different harmonies:
 - monochrome
 
 see:
-https://www.ethangardner.com/articles/2009/03/15/a-math-based-approach-to-color-theory-using-hue-saturation-and-brightness-hsb/
-for mathematic approach
+[A math based approach to color theory](https://www.ethangardner.com/articles/2009/03/15/a-math-based-approach-to-color-theory-using-hue-saturation-and-brightness-hsb/)
