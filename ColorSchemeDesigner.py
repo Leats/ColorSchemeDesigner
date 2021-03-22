@@ -1,3 +1,4 @@
+import os
 import random
 
 from PIL import Image
@@ -12,14 +13,15 @@ def create_scheme(color):
                create_triadic_scheme, create_tetradic_scheme, create_analogous_scheme]
 
     colors = random.choice(schemes)(color)
-    print([RGBtoHEX(c) for c in colors])
+    color_array = [RGBtoHEX(c) for c in colors]
+    print(color_array)
 
     img = Image.new('RGB', (500, 100), colors[0])
     img.paste(colors[1], [100, 0, 200, 100])
     img.paste(colors[2], [200, 0, 300, 100])
     img.paste(colors[3], [300, 0, 400, 100])
     img.paste(colors[4], [400, 0, 500, 100])
-    img.show()
+    img.save(f"{os.getcwd()}/{'_'.join(color_array)}.png")
 
 
 def create_compl_scheme(color):
@@ -43,7 +45,8 @@ def create_mono_scheme(color):
     colors = [tuple(change_brightness(color, brightness))]
     for x in range(0, 4):
         brightness -= 0.098
-        colors.append(tuple(change_brightness(change_hue(colors[0], 9), brightness)))
+        colors.append(tuple(change_brightness(
+            change_hue(colors[0], 9), brightness)))
     return colors
 
 
@@ -52,7 +55,8 @@ def create_split_scheme(color):
     colors = [tuple(color)]
     colors.append(tuple(change_brightness(change_saturation(
         color, random.random()), random.random())))
-    colors.append(tuple(change_hue(change_saturation(color, random.random()), 150)))
+    colors.append(
+        tuple(change_hue(change_saturation(color, random.random()), 150)))
     colors.append(tuple(change_hue(color, -210)))
     colors.append(tuple(change_brightness(change_saturation(
         colors[3], random.random()), random.random())))
@@ -64,7 +68,8 @@ def create_triadic_scheme(color):
     colors = [tuple(color)]
     colors.append(tuple(change_brightness(change_saturation(
         color, random.random()), random.random())))
-    colors.append(tuple(change_hue(change_saturation(color, random.random()), 120)))
+    colors.append(
+        tuple(change_hue(change_saturation(color, random.random()), 120)))
     colors.append(tuple(change_hue(color, 240)))
     colors.append(tuple(change_brightness(change_saturation(
         colors[-1], random.random()), random.random())))
@@ -76,7 +81,8 @@ def create_tetradic_scheme(color):
     colors = [tuple(color)]
     colors.append(tuple(change_brightness(change_saturation(
         color, random.random()), random.random())))
-    colors.append(tuple(change_hue(change_saturation(color, random.random()), 90)))
+    colors.append(
+        tuple(change_hue(change_saturation(color, random.random()), 90)))
     colors.append(tuple(change_hue(color, 180)))
     colors.append(tuple(change_brightness(change_saturation(
         change_hue(color, 270), random.random()), random.random())))
@@ -88,7 +94,8 @@ def create_analogous_scheme(color):
     colors = [tuple(color)]
     colors.append(tuple(change_brightness(change_saturation(
         color, random.random()), random.random())))
-    colors.append(tuple(change_hue(change_saturation(color, random.random()), 30)))
+    colors.append(
+        tuple(change_hue(change_saturation(color, random.random()), 30)))
     colors.append(tuple(change_hue(color, 60)))
     colors.append(tuple(change_brightness(change_saturation(
         change_hue(color, 90), random.random()), random.random())))
@@ -102,7 +109,6 @@ def random_color():
 
 def complementary(color):
     """Give the complementary color given one color saved as string."""
-    complementaryColor = []
 
     try:
         if not valid_color(color):
@@ -147,6 +153,7 @@ def valid_color(color):
     if len(color) == 3:
         return all(0 <= n <= 255 for n in color)
     return False
+
 
 if __name__ == '__main__':
     create_scheme(random_color())
